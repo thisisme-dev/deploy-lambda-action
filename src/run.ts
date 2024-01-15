@@ -18,6 +18,7 @@ type Inputs = {
   zipPath?: string
   aliasName: string
   aliasDescription: string
+  environmentVariables: string
 }
 
 type Outputs = {
@@ -28,6 +29,8 @@ type Outputs = {
 
 export const run = async (inputs: Inputs): Promise<Outputs> => {
   const client = new LambdaClient({})
+  const updatedConfiration = await updateFunctionConfiguration(client, inputs)
+  console.log(updatedConfiration)
   const updatedFunction = await updateFunctionCode(client, inputs)
   const functionVersion = updatedFunction.Version
   const functionVersionARN = updatedFunction.FunctionArn
@@ -55,6 +58,18 @@ export const run = async (inputs: Inputs): Promise<Outputs> => {
   }
   core.info(`Available alias ${functionAliasARN}`)
   return { functionVersion, functionVersionARN, functionAliasARN }
+}
+
+const updateFunctionConfiguration = async (client: LambdaClient, inputs: Inputs) => {
+  core.info(`Updating function ${inputs.functionName} configuration`)
+  return await client.send(
+    new UpdateFunctionCodeCommand({
+      FunctionName: inputs.functionName,
+      Environment: {
+        Variables: JSON.parse(inputs.environmentVariables) as Record<string, string>,
+      },
+    }),
+  )
 }
 
 const updateFunctionCode = async (client: LambdaClient, inputs: Inputs) => {
