@@ -9,6 +9,7 @@ import {
   UpdateAliasCommandInput,
   UpdateAliasCommandOutput,
   UpdateFunctionCodeCommand,
+  UpdateFunctionConfigurationCommand,
 } from '@aws-sdk/client-lambda'
 import { readFile } from 'fs/promises'
 
@@ -66,7 +67,7 @@ const updateFunctionConfiguration = async (client: LambdaClient, inputs: Inputs)
   }
   core.info(`Updating function ${inputs.functionName} configuration`)
   return await client.send(
-    new UpdateFunctionCodeCommand({
+    new UpdateFunctionConfigurationCommand({
       FunctionName: inputs.functionName,
       Environment: {
         Variables: JSON.parse(inputs.environmentVariables) as Record<string, string>,
@@ -84,6 +85,9 @@ const updateFunctionCode = async (client: LambdaClient, inputs: Inputs) => {
         FunctionName: inputs.functionName,
         ZipFile: zipFile,
         Publish: true,
+        Environment: {
+          Variables: JSON.parse(inputs.environmentVariables) as Record<string, string>,
+        },
       }),
     )
   }
