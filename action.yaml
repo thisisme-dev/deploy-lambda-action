@@ -18,6 +18,10 @@ inputs:
     description: Description of function alias (optional)
     required: false
     default: ref=${{ github.ref }},sha=${{ github.sha }}
+  environmentVariables:
+    description: Environment variables
+    required: false
+    default: '{}'
 
 outputs:
   function-version:
