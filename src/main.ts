@@ -8,6 +8,7 @@ const main = async (): Promise<void> => {
     zipPath: core.getInput('zip-path') || undefined,
     aliasName: core.getInput('alias-name'),
     aliasDescription: core.getInput('alias-description'),
+    environmentVariables: core.getInput('environment-variables'),
   })
   core.setOutput('function-version', outputs.functionVersion)
   core.setOutput('function-version-arn', outputs.functionVersionARN)

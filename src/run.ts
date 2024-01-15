@@ -61,6 +61,9 @@ export const run = async (inputs: Inputs): Promise<Outputs> => {
 }
 
 const updateFunctionConfiguration = async (client: LambdaClient, inputs: Inputs) => {
+  if (!inputs.environmentVariables) {
+    return
+  }
   core.info(`Updating function ${inputs.functionName} configuration`)
   return await client.send(
     new UpdateFunctionCodeCommand({
